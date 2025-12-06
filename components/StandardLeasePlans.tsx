@@ -95,52 +95,54 @@ export default function StandardLeasePlans({
 
   return (
     <>
-      <div className="bg-slate-900 rounded-3xl p-6 border border-slate-800 shadow-2xl relative overflow-hidden w-full">
+      <div className="bg-slate-900 rounded-3xl p-4 md:p-6 border border-slate-800 shadow-2xl relative overflow-hidden w-full">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h3 className="text-2xl font-bold text-white">Standard Plan</h3>
-            <p className="text-slate-400 text-xs">
+            <h3 className="text-xl md:text-2xl font-bold text-white">
+              Standard Plan
+            </h3>
+            <p className="text-slate-400 text-[10px] md:text-xs">
               Fixed rate with {FIXED_DOWN_PAYMENT_PERCENT * 100}% down payment
             </p>
           </div>
-          <span className="text-xs bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/20 font-bold uppercase">
+          <span className="text-[10px] md:text-xs bg-emerald-500/10 text-emerald-400 px-2 md:px-3 py-1 rounded-full border border-emerald-500/20 font-bold uppercase whitespace-nowrap">
             Recommended
           </span>
         </div>
 
         {/* Down Payment Block */}
-        <div className="bg-slate-800/50 rounded-2xl p-5 mb-6 border border-slate-700 flex justify-between items-center">
+        <div className="bg-slate-800/50 rounded-2xl p-4 md:p-5 mb-6 border border-slate-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
           <div className="flex items-center gap-3">
             <div className="bg-slate-700 p-2 rounded-lg text-slate-300">
               <Info size={20} />
             </div>
             <div>
-              <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">
+              <p className="text-slate-400 text-[10px] md:text-xs font-bold uppercase tracking-wider">
                 Down Payment
               </p>
-              <p className="text-white font-bold text-lg">
+              <p className="text-white font-bold text-base md:text-lg">
                 {formatLKR(cashInHand)}
               </p>
             </div>
           </div>
-          <div className="text-right">
-            <p className="text-slate-500 text-xs font-bold uppercase tracking-wider">
+          <div className="text-left sm:text-right w-full sm:w-auto pl-[44px] sm:pl-0">
+            <p className="text-slate-500 text-[10px] md:text-xs font-bold uppercase tracking-wider">
               Loan Amount
             </p>
-            <p className="text-slate-300 font-mono text-lg">
+            <p className="text-slate-300 font-mono text-base md:text-lg">
               {formatLKR(bestMath.loanAmount)}
             </p>
           </div>
         </div>
 
         {/* Duration Tabs */}
-        <div className="flex bg-slate-800 p-1 rounded-xl mb-6 border border-slate-700 overflow-x-auto">
+        <div className="flex bg-slate-800 p-1 rounded-xl mb-6 border border-slate-700 overflow-x-auto scrollbar-hide">
           {[12, 24, 36, 48, 60].map((months) => (
             <button
               key={months}
               onClick={() => setSelectedDuration(months)}
-              className={`flex-1 min-w-[50px] py-3 rounded-lg text-sm font-bold transition-all whitespace-nowrap ${
+              className={`flex-1 min-w-[60px] py-2 md:py-3 rounded-lg text-xs md:text-sm font-bold transition-all whitespace-nowrap ${
                 selectedDuration === months
                   ? "bg-emerald-500 text-black shadow-lg"
                   : "text-slate-400 hover:text-white hover:bg-slate-700"
@@ -153,37 +155,37 @@ export default function StandardLeasePlans({
 
         {/* Comparison Card */}
         <div className="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden relative">
-          <div className="bg-gradient-to-r from-emerald-600 to-emerald-500 text-black px-6 py-2 flex justify-between items-center">
-            <span className="font-bold text-xs uppercase tracking-wider">
+          <div className="bg-gradient-to-r from-emerald-600 to-emerald-500 text-black px-4 md:px-6 py-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1 sm:gap-0">
+            <span className="font-bold text-[10px] md:text-xs uppercase tracking-wider">
               Total Savings
             </span>
-            <span className="font-bold text-sm bg-black/20 px-2 py-0.5 rounded text-white">
+            <span className="font-bold text-xs md:text-sm bg-black/20 px-2 py-0.5 rounded text-white">
               {formatLKR(savings)} ({savingsPercent.toFixed(0)}% Off)
             </span>
           </div>
 
-          <div className="p-6 space-y-6">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-slate-700 rounded-xl shrink-0">
-                  <Store size={24} className="text-rose-300" />
+          <div className="p-4 md:p-6 space-y-6">
+            <div className="flex justify-between items-center gap-2">
+              <div className="flex items-center gap-2 md:gap-4">
+                <div className="p-2 md:p-3 bg-slate-700 rounded-xl shrink-0">
+                  <Store size={20} className="text-rose-300 md:w-6 md:h-6" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-slate-200">
+                  <p className="text-xs md:text-sm font-bold text-slate-200">
                     Dealer Normal
                   </p>
                   <div className="mt-1">
-                    <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">
+                    <span className="text-[8px] md:text-[10px] text-slate-400 uppercase font-bold tracking-wider block">
                       Total Cost
                     </span>
-                    <p className="text-white font-bold">
+                    <p className="text-white font-bold text-xs md:text-base">
                       {formatLKR(dealerMath.totalCost)}
                     </p>
                   </div>
                 </div>
               </div>
-              <div className="text-right">
-                <p className="text-xl md:text-2xl font-bold text-rose-400 line-through decoration-rose-500/60 decoration-2">
+              <div className="text-right shrink-0">
+                <p className="text-lg md:text-2xl font-bold text-rose-400 line-through decoration-rose-500/60 decoration-2">
                   {formatLKR(dealerMath.monthlyRental)}
                 </p>
               </div>
@@ -195,30 +197,34 @@ export default function StandardLeasePlans({
               </div>
             </div>
 
-            <div className="flex justify-between items-center">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-emerald-500 text-black rounded-xl shadow-lg shadow-emerald-500/20 shrink-0">
-                  <Building2 size={24} strokeWidth={2.5} />
+            <div className="flex justify-between items-center gap-2">
+              <div className="flex items-center gap-2 md:gap-4">
+                <div className="p-2 md:p-3 bg-emerald-500 text-black rounded-xl shadow-lg shadow-emerald-500/20 shrink-0">
+                  <Building2
+                    size={20}
+                    strokeWidth={2.5}
+                    className="md:w-6 md:h-6"
+                  />
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-emerald-400">
+                  <p className="text-xs md:text-sm font-bold text-emerald-400">
                     Direct Bank
                   </p>
                   <div className="mt-1">
-                    <span className="text-[10px] text-emerald-500/70 uppercase font-bold tracking-wider">
+                    <span className="text-[8px] md:text-[10px] text-emerald-500/70 uppercase font-bold tracking-wider block">
                       Total Cost
                     </span>
-                    <p className="text-white font-bold">
+                    <p className="text-white font-bold text-xs md:text-base">
                       {formatLKR(bestMath.totalCost)}
                     </p>
                   </div>
                 </div>
               </div>
-              <div className="text-right">
-                <p className="text-3xl md:text-4xl font-bold text-white tracking-tighter">
+              <div className="text-right shrink-0">
+                <p className="text-2xl md:text-4xl font-bold text-white tracking-tighter">
                   {formatLKR(bestMath.monthlyRental)}
                 </p>
-                <p className="text-xs text-slate-400 font-medium uppercase tracking-wide">
+                <p className="text-[10px] md:text-xs text-slate-400 font-medium uppercase tracking-wide">
                   Per Month
                 </p>
               </div>

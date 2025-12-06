@@ -100,14 +100,16 @@ export default function LeaseCalculator({
 
   return (
     <>
-      <div className="bg-slate-900 rounded-3xl p-6 border border-slate-800 shadow-2xl relative overflow-hidden">
+      <div className="bg-slate-900 rounded-3xl p-4 md:p-6 border border-slate-800 shadow-2xl relative overflow-hidden">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-2xl font-bold text-white">Customize Plan</h3>
+          <h3 className="text-xl md:text-2xl font-bold text-white">
+            Customize Plan
+          </h3>
         </div>
 
         {/* Slider */}
         <div
-          className={`rounded-2xl p-5 mb-6 border transition-colors duration-300 ${
+          className={`rounded-2xl p-4 md:p-5 mb-6 border transition-colors duration-300 ${
             isEligible
               ? "bg-slate-800/50 border-slate-700"
               : "bg-rose-900/10 border-rose-500/30"
@@ -125,7 +127,7 @@ export default function LeaseCalculator({
                 {isEligible ? <Info size={16} /> : <TrendingDown size={16} />}
               </div>
               <label
-                className={`text-xs font-bold uppercase tracking-wider ${
+                className={`text-[10px] md:text-xs font-bold uppercase tracking-wider ${
                   isEligible ? "text-slate-400" : "text-rose-400"
                 }`}
               >
@@ -134,7 +136,7 @@ export default function LeaseCalculator({
             </div>
             <div className="text-right">
               <span
-                className={`font-mono font-bold text-2xl block leading-none ${
+                className={`font-mono font-bold text-xl md:text-2xl block leading-none ${
                   isEligible ? "text-emerald-400" : "text-rose-400"
                 }`}
               >
@@ -157,7 +159,7 @@ export default function LeaseCalculator({
             }`}
           />
 
-          <div className="flex justify-between text-[10px] text-slate-500 mt-3 font-medium uppercase tracking-wider">
+          <div className="flex justify-between text-[8px] md:text-[10px] text-slate-500 mt-3 font-medium uppercase tracking-wider">
             <span>0</span>
             <span>{formatLKR(safePrice / 2)}</span>
             <span>Full Price</span>
@@ -165,12 +167,12 @@ export default function LeaseCalculator({
         </div>
 
         {/* Duration */}
-        <div className="flex bg-slate-800 p-1 rounded-xl mb-6 border border-slate-700 overflow-x-auto">
+        <div className="flex bg-slate-800 p-1 rounded-xl mb-6 border border-slate-700 overflow-x-auto scrollbar-hide">
           {[12, 24, 36, 48, 60].map((months) => (
             <button
               key={months}
               onClick={() => setSelectedDuration(months)}
-              className={`flex-1 min-w-[50px] py-3 rounded-lg text-sm font-bold transition-all whitespace-nowrap ${
+              className={`flex-1 min-w-[60px] py-2 md:py-3 rounded-lg text-xs md:text-sm font-bold transition-all whitespace-nowrap ${
                 selectedDuration === months
                   ? "bg-emerald-500 text-black shadow-lg"
                   : "text-slate-400 hover:text-white hover:bg-slate-700"
@@ -208,37 +210,37 @@ export default function LeaseCalculator({
             !isEligible ? "opacity-50 grayscale" : ""
           }`}
         >
-          <div className="bg-gradient-to-r from-emerald-600 to-emerald-500 text-black px-6 py-2 flex justify-between items-center">
-            <span className="font-bold text-xs uppercase tracking-wider">
+          <div className="bg-gradient-to-r from-emerald-600 to-emerald-500 text-black px-4 md:px-6 py-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1 sm:gap-0">
+            <span className="font-bold text-[10px] md:text-xs uppercase tracking-wider">
               Total Savings
             </span>
-            <span className="font-bold text-sm bg-black/20 px-2 py-0.5 rounded text-white">
+            <span className="font-bold text-xs md:text-sm bg-black/20 px-2 py-0.5 rounded text-white">
               {formatLKR(savings)} ({savingsPercent.toFixed(0)}% Off)
             </span>
           </div>
 
-          <div className="p-6 space-y-6">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-slate-700 rounded-xl shrink-0">
-                  <Store size={24} className="text-rose-300" />
+          <div className="p-4 md:p-6 space-y-6">
+            <div className="flex justify-between items-center gap-2">
+              <div className="flex items-center gap-2 md:gap-4">
+                <div className="p-2 md:p-3 bg-slate-700 rounded-xl shrink-0">
+                  <Store size={20} className="text-rose-300 md:w-6 md:h-6" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-slate-200">
+                  <p className="text-xs md:text-sm font-bold text-slate-200">
                     Dealer Normal
                   </p>
                   <div className="mt-1">
-                    <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">
+                    <span className="text-[8px] md:text-[10px] text-slate-400 uppercase font-bold tracking-wider block">
                       Total Cost
                     </span>
-                    <p className="text-white font-bold">
+                    <p className="text-white font-bold text-xs md:text-base">
                       {formatLKR(dealerMath.totalCost)}
                     </p>
                   </div>
                 </div>
               </div>
-              <div className="text-right">
-                <p className="text-xl md:text-2xl font-bold text-rose-400 line-through decoration-rose-500/60 decoration-2">
+              <div className="text-right shrink-0">
+                <p className="text-lg md:text-2xl font-bold text-rose-400 line-through decoration-rose-500/60 decoration-2">
                   {formatLKR(dealerMath.monthlyRental)}
                 </p>
               </div>
@@ -250,30 +252,34 @@ export default function LeaseCalculator({
               </div>
             </div>
 
-            <div className="flex justify-between items-center">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-emerald-500 text-black rounded-xl shadow-lg shadow-emerald-500/20 shrink-0">
-                  <Building2 size={24} strokeWidth={2.5} />
+            <div className="flex justify-between items-center gap-2">
+              <div className="flex items-center gap-2 md:gap-4">
+                <div className="p-2 md:p-3 bg-emerald-500 text-black rounded-xl shadow-lg shadow-emerald-500/20 shrink-0">
+                  <Building2
+                    size={20}
+                    strokeWidth={2.5}
+                    className="md:w-6 md:h-6"
+                  />
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-emerald-400">
+                  <p className="text-xs md:text-sm font-bold text-emerald-400">
                     Direct Bank
                   </p>
                   <div className="mt-1">
-                    <span className="text-[10px] text-emerald-500/70 uppercase font-bold tracking-wider">
+                    <span className="text-[8px] md:text-[10px] text-emerald-500/70 uppercase font-bold tracking-wider block">
                       Total Cost
                     </span>
-                    <p className="text-white font-bold">
+                    <p className="text-white font-bold text-xs md:text-base">
                       {formatLKR(bestMath.totalCost)}
                     </p>
                   </div>
                 </div>
               </div>
-              <div className="text-right">
-                <p className="text-3xl md:text-4xl font-bold text-white tracking-tighter">
+              <div className="text-right shrink-0">
+                <p className="text-2xl md:text-4xl font-bold text-white tracking-tighter">
                   {formatLKR(bestMath.monthlyRental)}
                 </p>
-                <p className="text-xs text-slate-400 font-medium uppercase tracking-wide">
+                <p className="text-[10px] md:text-xs text-slate-400 font-medium uppercase tracking-wide">
                   Per Month
                 </p>
               </div>
