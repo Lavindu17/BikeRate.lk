@@ -86,7 +86,7 @@ export default function Hero({ suggestions = [] }: HeroProps) {
     }).format(val);
 
   return (
-    <div className="relative w-full h-[600px] flex items-center justify-center bg-slate-900 overflow-hidden">
+    <div className="relative w-full min-h-[600px] flex items-center justify-center bg-slate-900 overflow-hidden py-20">
       {/* Background Decor */}
       <div className="absolute inset-0 z-0 opacity-20">
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent"></div>
@@ -101,29 +101,29 @@ export default function Hero({ suggestions = [] }: HeroProps) {
         </p>
 
         {/* Search Module */}
-        <div className="bg-slate-800/80 backdrop-blur-md border border-slate-700 rounded-2xl p-2 md:p-4 shadow-2xl max-w-2xl mx-auto">
+        <div className="bg-slate-800/80 backdrop-blur-md border border-slate-700 rounded-2xl p-3 md:p-4 shadow-2xl max-w-2xl mx-auto">
           {/* Tabs */}
           <div className="flex gap-2 mb-6 p-1 bg-slate-900/50 rounded-xl">
             <button
               onClick={() => setActiveTab("model")}
-              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-medium transition-all duration-200 ${
+              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-medium transition-all duration-200 text-sm md:text-base ${
                 activeTab === "model"
                   ? "bg-emerald-500 text-white shadow-lg"
                   : "text-slate-400 hover:text-white"
               }`}
             >
-              <Bike size={20} />
+              <Bike size={20} className="shrink-0" />
               <span>I know the Bike</span>
             </button>
             <button
               onClick={() => setActiveTab("budget")}
-              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-medium transition-all duration-200 ${
+              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-medium transition-all duration-200 text-sm md:text-base ${
                 activeTab === "budget"
                   ? "bg-emerald-500 text-white shadow-lg"
                   : "text-slate-400 hover:text-white"
               }`}
             >
-              <Wallet size={20} />
+              <Wallet size={20} className="shrink-0" />
               <span>I know my Budget</span>
             </button>
           </div>
