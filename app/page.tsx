@@ -5,12 +5,36 @@ import { supabase } from "@/lib/supaabaseClient";
 // Force fresh data every time (No caching)
 export const dynamic = "force-dynamic";
 
-export default async function Home() {
-  // 1. Fetch data from Supabase
-  const { data: bikes, error } = await supabase
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; budget?: string }>;
+}) {
+  const { q, budget } = await searchParams;
+
+  // 1. Start building the query
+  let query = supabase
     .from("bikes")
     .select("*")
-    .order("id", { ascending: false }); // Show newest added first
+    .order("id", { ascending: false });
+
+  // 2. Apply filters if present
+  if (q) {
+    // Filter by name (case-insensitive partial match)
+    query = query.ilike("name", `%${q}%`);
+  }
+  if (budget) {
+    // Filter by price (less than or equal to budget)
+    query = query.lte("price", parseInt(budget));
+  }
+
+  // 3. Execute the query
+  const { data: bikes, error } = await query;
+
+  // 4. Fetch all bike names for autocomplete (separate query to get all options)
+  const { data: allBikes } = await supabase.from("bikes").select("name");
+  // Extract unique names
+  const uniqueNames = Array.from(new Set(allBikes?.map((b) => b.name) || []));
 
   if (error) {
     console.error("Error fetching bikes:", error);
@@ -23,16 +47,10 @@ export default async function Home() {
         <div className="text-2xl font-bold tracking-tighter cursor-pointer">
           BikeRate<span className="text-emerald-400">.lk</span>
         </div>
-        <div className="flex gap-4 text-sm font-medium text-slate-400">
-          <button className="hover:text-white transition">Inventory</button>
-          <button className="bg-emerald-600/20 text-emerald-400 border border-emerald-600/50 px-4 py-2 rounded-lg hover:bg-emerald-600 hover:text-white transition-all">
-            Dealer Login
-          </button>
-        </div>
       </nav>
 
       {/* Hero Section */}
-      <Hero />
+      <Hero suggestions={uniqueNames} />
 
       {/* Inventory Section */}
       <section className="max-w-7xl mx-auto px-4 py-16">

@@ -1,26 +1,94 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Search, Wallet, Bike, ChevronRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 
-export default function Hero() {
+interface HeroProps {
+  suggestions?: string[];
+}
+
+export default function Hero({ suggestions = [] }: HeroProps) {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<"model" | "budget">("model");
-  const [budget, setBudget] = useState<number>(15000);
+
+  // Default monthly budget: 25,000 LKR
+  const [monthlyBudget, setMonthlyBudget] = useState<number>(25000);
   const [searchTerm, setSearchTerm] = useState<string>("");
 
-  const handleSearch = () => {
-    if (activeTab === "model") {
-      console.log(`Searching for bike: ${searchTerm}`);
+  // Suggestions state
+  const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  // Close suggestions when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target as Node)
+      ) {
+        setShowSuggestions(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setSearchTerm(val);
+
+    if (val.length > 0) {
+      const filtered = suggestions.filter((name) =>
+        name.toLowerCase().includes(val.toLowerCase())
+      );
+      setFilteredSuggestions(filtered);
+      setShowSuggestions(true);
     } else {
-      console.log(`Searching for budget: Rs. ${budget}`);
+      setShowSuggestions(false);
     }
   };
+
+  const handleSuggestionClick = (name: string) => {
+    setSearchTerm(name);
+    setShowSuggestions(false);
+  };
+
+  const handleSearch = () => {
+    // 1. Construct the URL parameters
+    const params = new URLSearchParams();
+
+    if (activeTab === "model" && searchTerm) {
+      params.set("q", searchTerm);
+    } else if (activeTab === "budget") {
+      // 2. SMART CONVERSION: Monthly -> Total Price
+      // We convert the user's "Monthly Budget" into an "Approximate Total Bike Price"
+      // to filter the database correctly.
+      // Math: Assumes 4-year lease (Factor ~2900) & 40% Down Payment.
+      // Multiplier ~56 converts Rental to Price. (e.g. 20k rental -> ~1.1M bike)
+      const approxTotalPrice = Math.round(monthlyBudget * 56);
+      params.set("budget", approxTotalPrice.toString());
+    }
+
+    // 3. Navigate to the main page with params + scroll to inventory
+    router.push(`/?${params.toString()}#inventory`);
+  };
+
+  // Helper to format currency
+  const formatLKR = (val: number) =>
+    new Intl.NumberFormat("en-LK", {
+      style: "currency",
+      currency: "LKR",
+      maximumFractionDigits: 0,
+    }).format(val);
 
   return (
     <div className="relative w-full h-[600px] flex items-center justify-center bg-slate-900 overflow-hidden">
       {/* Background Decor */}
       <div className="absolute inset-0 z-0 opacity-20">
-        {/* Placeholder for image */}
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent"></div>
       </div>
 
@@ -64,7 +132,7 @@ export default function Hero() {
           <div className="px-2 md:px-4 pb-4">
             {activeTab === "model" ? (
               <div className="flex flex-col md:flex-row gap-3">
-                <div className="relative flex-1">
+                <div className="relative flex-1" ref={wrapperRef}>
                   <Search
                     className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
                     size={20}
@@ -74,8 +142,27 @@ export default function Hero() {
                     placeholder="e.g. Honda Dio..."
                     className="w-full bg-slate-900 border border-slate-700 text-white pl-12 pr-4 py-4 rounded-xl focus:outline-none focus:border-emerald-500 transition-colors placeholder:text-slate-600"
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={handleInputChange}
+                    onFocus={() => {
+                      if (searchTerm.length > 0) setShowSuggestions(true);
+                    }}
+                    onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                   />
+
+                  {/* Suggestions Dropdown */}
+                  {showSuggestions && filteredSuggestions.length > 0 && (
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-slate-800 border border-slate-700 rounded-xl shadow-xl z-50 max-h-60 overflow-y-auto">
+                      {filteredSuggestions.map((suggestion, index) => (
+                        <div
+                          key={index}
+                          className="px-4 py-3 text-left text-slate-300 hover:bg-slate-700 hover:text-white cursor-pointer transition-colors first:rounded-t-xl last:rounded-b-xl"
+                          onClick={() => handleSuggestionClick(suggestion)}
+                        >
+                          {suggestion}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <button
                   onClick={handleSearch}
@@ -92,7 +179,7 @@ export default function Hero() {
                   </label>
                   <div className="flex items-end gap-2">
                     <span className="text-4xl font-bold text-white">
-                      Rs. {budget.toLocaleString()}
+                      {formatLKR(monthlyBudget)}
                     </span>
                     <span className="text-slate-500 mb-1">/ month</span>
                   </div>
@@ -101,11 +188,11 @@ export default function Hero() {
                 <input
                   type="range"
                   min="5000"
-                  max="50000"
-                  step="500"
-                  value={budget}
-                  onChange={(e) => setBudget(Number(e.target.value))}
-                  className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+                  max="100000"
+                  step="1000"
+                  value={monthlyBudget}
+                  onChange={(e) => setMonthlyBudget(Number(e.target.value))}
+                  className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-emerald-500 hover:accent-emerald-400"
                 />
 
                 <button
